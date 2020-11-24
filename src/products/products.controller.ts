@@ -1,26 +1,30 @@
 import { Controller, Delete, Get, Param, Post, Put, Body, HttpStatus, HttpCode, Header, Req, Res } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto'
 import { UpdateProductDto } from './dto/updateProduct.dto';
-import { Request, Response } from 'express'
+import { ProductService } from './dto/productservice';
 
 @Controller('products')
 export class ProductsController {
 
+    constructor(private readonly productsService: ProductService) {
+
+    }
+
     @Get()
-    getAll(): string {
-        return 'getAll'
+    getAll() {
+        return this.productsService.getAll()
     }
 
     @Get(':id')
-    getOne(@Param('id') id:string ): string {
-        return 'getOne' + id
+    getOne(@Param('id') id:string ) {
+        return this.productsService.getById(id)
     }
 
     @Post()
     @HttpCode(HttpStatus.CREATED)
     @Header('Cache-Control', 'none')
-    create (@Body() createProductDto: CreateProductDto): string {
-        return `Title: ${createProductDto.title} Price: ${createProductDto.price}`
+    create (@Body() createProductDto: CreateProductDto){
+        return this.productsService.create(createProductDto)
     }
 
     @Delete(':id')
